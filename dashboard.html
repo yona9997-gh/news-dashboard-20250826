@@ -1,79 +1,216 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>이동통신·칩셋·온디바이스 AI·보안 뉴스 데쉬보드 (2025-08-26)</title>
-  <style>
-    body { font-family: 'Malgun Gothic', Arial, sans-serif; background: #f9f9f9; }
-    .dashboard { max-width: 1200px; margin: 2em auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 2em;}
-    h1 { text-align: center; margin-bottom: 1em; }
-    h2 { background: #eee; padding: 0.5em 1em; border-radius: 6px; margin-top: 2em; }
-    ul { list-style: disc; margin-left: 1.4em;}
-    li { margin-bottom: 0.4em; }
-    a { color: #0066cc; text-decoration: none;}
-    a:hover { text-decoration: underline; }
-    .desc {color: #6c6c6c; font-size: 0.97em;}
-  </style>
-</head>
-<body>
-<div class="dashboard">
-  <h1>이동통신·모뎀 칩셋·온디바이스 AI/보안 뉴스 데쉬보드<br><span class="desc">2025년 8월 26일 기준 최신 기사</span></h1>
+import requests
+from googletrans import Translator
+from datetime import datetime, timedelta
+import random
+import html
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import os
 
-  <h2>이동통신 단말기</h2>
-  <ul>
-    <li><a href="https://www.chosun.com/economy/tech_it/2025/08/26/O4F3QB5T4HCTGT2ZMMWOK4IGDQ/" target="_blank">아이폰17, 단통법 폐지 후 보조금 축소…‘공짜폰’ 기대 흔들</a></li>
-    <li><a href="https://v.daum.net/v/20250826084213420" target="_blank">스타링크 한국 상륙 임박, 국내 통신정책 변화 예고</a></li>
-    <li><a href="https://www.yna.co.kr/view/AKR20250826081100009" target="_blank">미국 입국 여행객, 휴대폰·SNS 검열 강화 대비 ‘일회용폰’ 준비</a></li>
-    <li><a href="https://www.youtube.com/watch?v=x2Q5c7b45yk" target="_blank">SKT, 연말까지 탈퇴 위약금 면제 조정안 수용</a></li>
-    <li><a href="https://www.chosun.com/economy/tech_it/2025/08/26/YTBL4XARJKGEMZM3AYXJKHO4ZI/" target="_blank">KT, AI 기반 5G 상용망 기술 국내 첫 적용 검증</a></li>
-    <li><a href="https://www.hindustantimes.com/technology/google-pixel-10-series-vivo-v60-and-more-upcoming-5g-mobile-phone-launches-in-august-2025-101754289501066.html" target="_blank">구글 픽셀10 시리즈, Vivo V60 등 5G 신제품 글로벌 출시 임박 (번역)</a></li>
-    <li><a href="https://www.gsmarena.com/news.php3" target="_blank">Xiaomi·Realme 등 신제품 트렌드, 픽셀10 공식 출시 (번역)</a></li>
-    <li><a href="https://biz.newdaily.co.kr/site/data/html/2025/08/26/2025082600221.html" target="_blank">LGU+, AI로 IPTV 불만 사전 해결…무선 통신까지 확대 예정</a></li>
-    <li><a href="https://news.nate.com/view/20250826n08068" target="_blank">삼성전자 AI 냉장고·로봇청소기, 독일 IoT 보안 인증 획득</a></li>
-    <li><a href="https://news.nate.com/view/20250826n08068" target="_blank">삼성전자, S펜 등 단말 보안 특허 강화</a></li>
-  </ul>
+# 환경변수로부터 키 가져오기
+NEWSAPI_KEY = os.getenv('NEWSAPI_KEY')
+NAVER_CLIENT_ID = os.getenv('NAVER_CLIENT_ID')
+NAVER_CLIENT_SECRET = os.getenv('NAVER_CLIENT_SECRET')
 
-  <h2>모뎀 칩셋</h2>
-  <ul>
-    <li><a href="https://www.thelec.kr/news/articleView.html?idxno=33382" target="_blank">퀄컴, X85 5G 모뎀-RF 솔루션 공개…안드로이드 단말 성능 강화</a></li>
-    <li><a href="https://www.everythingrf.com/news/details/20007-apple-replaces-qualcomm-s-rf-modem-with-its-first-in-house-chipset-in-the-iphone-16e" target="_blank">애플, 아이폰 16e에서 퀄컴 대신 자체 RF 칩셋 최초 적용 (번역)</a></li>
-    <li><a href="https://www.thelec.kr/news/articleView.html?idxno=33382" target="_blank">퀄컴, 2025년 MWC서 X85 모뎀 공개…프리미엄 기능 핵심</a></li>
-    <li><a href="https://www.fnnews.com/news/202403031417558501" target="_blank">삼성전자, 엑시노스 모뎀 5400 사양 공개, 퀄컴 격차 좁혀</a></li>
-    <li><a href="https://dealsitetv.com/articles/93330" target="_blank">삼성전자, 5G 통신 모뎀 기술력 검증…차세대 자동차·XR 확장</a></li>
-    <li><a href="https://www.hindustantimes.com/technology/google-pixel-10-series-vivo-v60-and-more-upcoming-5g-mobile-phone-launches-in-august-2025-101754289501066.html" target="_blank">구글 픽셀10, TSMC 기반 Tensor G5 칩셋 탑재 (번역)</a></li>
-    <li><a href="https://www.thelec.kr/news/articleView.html?idxno=33382" target="_blank">퀄컴, 안드로이드 단말기용 X85 모뎀 보급 준비</a></li>
-    <li><a href="https://www.everythingrf.com/news/details/20007-apple-replaces-qualcomm-s-rf-modem-with-its-first-in-house-chipset-in-the-iphone-16e" target="_blank">삼성·퀄컴·애플 RF 모뎀, Wi-Fi 7·5G mmWave 등 비교분석 (번역)</a></li>
-    <li><a href="https://www.thelec.kr/news/articleView.html?idxno=33382" target="_blank">퀄컴, 새로운 5G 모뎀으로 커넥티비티·배터리·위치 정확도 혁신</a></li>
-    <li><a href="https://dealsitetv.com/articles/93330" target="_blank">삼성전자, 5G·AI 모뎀 칩 자동차·IoT·XR까지 확장</a></li>
-  </ul>
+# SMTP (메일 발송용)
+SMTP_SERVER = 'smtp.gmail.com'
+SMTP_PORT = 587
+SMTP_USER = os.getenv('SMTP_USER')
+SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
 
-  <h2>온디바이스 AI</h2>
-  <ul>
-    <li><a href="https://stockinvest.us/digest/apple-aapl-backs-ondevice-ai-cedes-cloudmodel-and-api-advantage-to-microsoft-google-meta" target="_blank">앱등이, 온디바이스 AI로 클라우드 방식 대비 변화 시도 (번역)</a></li>
-    <li><a href="https://www.radiokorea.com/news/article.php?uid=481260" target="_blank">K-온디바이스 AI 반도체 개발사업 예타 면제, 산업부 지원 확대</a></li>
-    <li><a href="https://m.boannews.com/html/detail.html?idx=138421" target="_blank">하이퍼노트, 온디바이스 AI 미팅노트로 글로벌 투자 유치 (번역)</a></li>
-    <li><a href="https://biz.newdaily.co.kr/site/data/html/2025/08/26/2025082600221.html" target="_blank">LGU+, 예측 품질 AI 기술 IPTV 및 이동통신 확대 적용</a></li>
-    <li><a href="https://www.chosun.com/economy/tech_it/2025/08/26/YTBL4XARJKGEMZM3AYXJKHO4ZI/" target="_blank">KT, 5G 상용망 AI-RAN 기술 검증 착수</a></li>
-    <li><a href="https://news.nate.com/view/20250826n08068" target="_blank">삼성전자, AI 기반 제품군 확대 및 보안 인증</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">NVIDIA 데이터센터 공간 한계, 새로운 AI 솔루션 제시 (번역)</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">미국 정부, 구글 Gemini AI 대규모 도입 (번역)</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">딥러닝 AI 기업, IT 업계 전반에 확산 (번역)</a></li>
-    <li><a href="https://www.yna.co.kr/view/AKR20250822142000003" target="_blank">K-온디바이스 AI 정부정책, 핵심 산업부터 빠른 적용 전망</a></li>
-  </ul>
+recipients = ['jonah.whang@sktelecom.com', 'yona997@naver.com']
 
-  <h2>온디바이스 보안</h2>
-  <ul>
-    <li><a href="https://news.nate.com/view/20250826n08068" target="_blank">삼성전자, 블록체인 기반 가전·로봇에 녹스 매트릭스 보안 탑재</a></li>
-    <li><a href="https://m.boannews.com/html/detail.html?idx=138421" target="_blank">하이퍼노트, 클라우드 미사용 온디바이스 AI 미팅노트 보안 특화 (번역)</a></li>
-    <li><a href="https://www.malwarebytes.com/blog/news/2025/08/android-critical-vulnerabilities-patched-update-as-soon-as-you-can" target="_blank">안드로이드, 8월 보안 패치로 6개 취약점 및 RCE 제거 (번역)</a></li>
-    <li><a href="https://www.everythingrf.com/news/details/20007-apple-replaces-qualcomm-s-rf-modem-with-its-first-in-house-chipset-in-the-iphone-16e" target="_blank">애플·삼성 RF 모뎀, 새로운 보안 설계·API 분리 (번역)</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">미국 정부, 구글 Gemini AI 채택으로 공공기관 보안 강화 (번역)</a></li>
-    <li><a href="https://www.chosun.com/economy/tech_it/2025/08/26/YTBL4XARJKGEMZM3AYXJKHO4ZI/" target="_blank">KT, 5G 망에 AI 기반 보안기술 적용 준비</a></li>
-    <li><a href="https://news.nate.com/view/20250826n08068" target="_blank">삼성·LG유플러스 무선·클라우드 기반 단말 보안 확대</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">딥러닝 기반, 코포라이트 보안 기업 AI 적용 증가 (번역)</a></li>
-    <li><a href="https://m.boannews.com/html/detail.html?idx=138421" target="_blank">기업 컴플라이언스팀, 온디바이스 AI 내부검증·적용 확대 (번역)</a></li>
-    <li><a href="https://www.artificialintelligence-news.com" target="_blank">NVIDIA, AI 데이터센터 보안 관리 신솔루션 공개 (번역)</a></li>
-  </ul>
-</div>
-</body>
-</html>
+# 키워드 리스트
+keywords_en = ['mobile device', 'mobile modem chipset', 'on-device AI', 'on-device security']
+keywords_kr = ['이동통신 단말기', '단말 모뎀 칩셋', '온디바이스 AI', '온디바이스 보안']
+
+translator = Translator()
+today = datetime.utcnow().date() + timedelta(hours=9)  # UTC +9 서울시간으로 변환
+yesterday = today - timedelta(days=1)
+
+NEWSAPI_URL = 'https://newsapi.org/v2/everything'
+NAVER_URL = 'https://openapi.naver.com/v1/search/news.json'
+
+def fetch_newsapi_news(keyword):
+    from_date = yesterday.strftime('%Y-%m-%d')
+    to_date = yesterday.strftime('%Y-%m-%d')
+    params = {
+        'q': keyword,
+        'pageSize': 10,
+        'sortBy': 'relevancy',
+        'language': 'en',
+        'from': from_date,
+        'to': to_date,
+        'apiKey': NEWSAPI_KEY,
+    }
+    response = requests.get(NEWSAPI_URL, params=params)
+    if response.status_code == 200:
+        return response.json().get('articles', [])
+    else:
+        print(f'NewsAPI error ({keyword}):', response.status_code, response.text)
+        return []
+
+def fetch_naver_news(keyword):
+    headers = {
+        'X-Naver-Client-Id': NAVER_CLIENT_ID,
+        'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+    }
+    params = {
+        'query': keyword,
+        'display': 20,
+        'sort': 'date'
+    }
+    response = requests.get(NAVER_URL, headers=headers, params=params)
+    if response.status_code == 200:
+        items = response.json().get('items', [])
+        filtered_items = []
+        for item in items:
+            pub_date = item.get('pubDate', '')
+            try:
+                dt = datetime.strptime(pub_date[:-6], '%a, %d %b %Y %H:%M:%S')
+                if dt.date() == today:
+                    filtered_items.append(item)
+            except:
+                pass
+        return filtered_items[:10]
+    else:
+        print(f'Naver API error ({keyword}):', response.status_code, response.text)
+        return []
+
+def translate_text(text):
+    try:
+        return translator.translate(text, src='en', dest='ko').text
+    except Exception:
+        return text
+
+def escape_html(text):
+    return html.escape(text)
+
+def build_html_dashboard():
+    html_output = """
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>뉴스 대시보드</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color:#f7f7f7; margin:0; padding:20px;">
+      <h2 style="color:#2c3e50; border-bottom:2px solid #2980b9; padding-bottom:10px;">뉴스 대시보드</h2>
+    """
+
+    for i in range(len(keywords_en)):
+        kw_en = keywords_en[i]
+        kw_kr = keywords_kr[i]
+
+        section_style = (
+            "background-color:#ffffff; padding:15px; margin-bottom:30px; "
+            "border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"
+        )
+
+        html_output += f'<div style="{section_style}">'
+        html_output += f'<h3 style="color:#2980b9;">{escape_html(kw_kr)} (영어: {escape_html(kw_en)})</h3>'
+
+        english_news = fetch_newsapi_news(kw_en)
+        english_items = []
+        for article in english_news:
+            title = translate_text(article.get('title', ''))
+            description = translate_text(article.get('description', ''))
+            url = article.get('url', '')
+            published_at = article.get('publishedAt', '')
+            try:
+                dt = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
+                published_str = dt.strftime('%Y-%m-%d %H:%M')
+            except:
+                published_str = published_at
+            english_items.append({
+                'title': title,
+                'description': description,
+                'url': url,
+                'publishedAt': published_str
+            })
+
+        korean_news = fetch_naver_news(kw_kr)
+        korean_items = []
+        for item in korean_news:
+            title = item.get('title', '').replace('&quot;', '"').replace('<b>', '').replace('</b>', '')
+            description = item.get('description', '').replace('&quot;', '"').replace('<b>', '').replace('</b>', '')
+            url = item.get('originallink', '')
+            pub_date = item.get('pubDate', '')
+            try:
+                dt = datetime.strptime(pub_date[:-6], '%a, %d %b %Y %H:%M:%S')
+                published_str = dt.strftime('%Y-%m-%d %H:%M')
+            except:
+                published_str = pub_date
+            korean_items.append({
+                'title': title,
+                'description': description,
+                'url': url,
+                'publishedAt': published_str
+            })
+
+        combined = english_items[:5] + korean_items[:5]
+        random.shuffle(combined)
+
+        table_style = "width:100%; border-collapse: collapse;"
+        th_style = (
+            "background-color:#2980b9; color:#fff; padding:10px; text-align:left; font-size:16px;"
+            "border-bottom: 2px solid #1c5980;"
+        )
+        td_style = "border-bottom:1px solid #ddd; padding:10px; vertical-align:top;"
+
+        html_output += f'<table style="{table_style}">'
+        html_output += (
+            f"<tr>"
+            f"<th style='{th_style}'>번호</th>"
+            f"<th style='{th_style}'>제목</th>"
+            f"<th style='{th_style}'>요약</th>"
+            f"<th style='{th_style}'>배포일</th>"
+            f"<th style='{th_style}'>링크</th>"
+            f"</tr>"
+        )
+
+        for idx, item in enumerate(combined, 1):
+            title = escape_html(item['title'])
+            description = escape_html(item['description'])
+            publishedAt = escape_html(item['publishedAt'])
+            url = escape_html(item['url'])
+
+            html_output += (
+                f"<tr>"
+                f"<td style='{td_style}'>{idx}</td>"
+                f"<td style='{td_style}'>{title}</td>"
+                f"<td style='{td_style}'>{description}</td>"
+                f"<td style='{td_style}'>{publishedAt}</td>"
+                f"<td style='{td_style}'><a href='{url}' target='_blank' "
+                f"style='color:#2980b9; text-decoration:none;'>링크</a></td>"
+                f"</tr>"
+            )
+        html_output += "</table></div>"
+
+    html_output += """
+    </body>
+    </html>
+    """
+    return html_output
+
+def send_email(subject, html_content, sender, recipients):
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipients)
+
+    part = MIMEText(html_content, 'html', 'utf-8')
+    msg.attach(part)
+
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASSWORD)
+        server.sendmail(sender, recipients, msg.as_string())
+        print("메일 발송 성공")
+
+def main():
+    html_dashboard = build_html_dashboard()
+    send_email("SKT 뉴스 대시보드", html_dashboard, SMTP_USER, recipients)
+
+if __name__ == "__main__":
+    main()
